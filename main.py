@@ -81,6 +81,31 @@ async def send_email(message: Sponsor):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to send email: {str(e)}")
+    
+@app.post("/prince/contact-us", tags=["Prince Portfolio Page"])
+async def send_email(message: Message):
+    try:
+        # Your email and password for authentication
+        email_user = "jarvisnayak@gmail.com"
+        email_password = "umlysbykyfpjqypr"
+
+        # Creating the MIMEText object
+        msg = MIMEText(message.message + "\n\n" + message.name + "\n" + message.email)
+        msg['Subject'] = "[Contact]"+f" {message.name} | "+message.subject
+        msg['From'] = email_user
+
+        # Establishing the connection to the SMTP server
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            server.starttls()
+            server.login(email_user, email_password)
+
+            # Sending the email
+            server.sendmail(email_user, ["advaita@iiit-bh.ac.in", "dump@iiit-bh.ac.in"], msg.as_string())
+
+        return JSONResponse(content={"message": "Email sent successfully"}, status_code=200)
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to send email: {str(e)}")
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8001, reload=True)
