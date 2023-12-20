@@ -61,8 +61,8 @@ async def send_email(message: Message):
 async def send_email(message: Sponsor):
     try:
         # Your email and password for authentication
-        email_user = "swoyamsid@gmail.com"
-        email_password = "enybgdnvkfdgutxa"
+        email_user = "jarvisnayak@gmail.com"
+        email_password = "umlysbykyfpjqypr"
 
         # Creating the MIMEText object
         msg = MIMEText(message.proposal + "\n\n" + message.contact_person + "\n" + message.designation+ "\n" + message.email + "\n" + message.company_name)
