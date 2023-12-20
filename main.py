@@ -100,7 +100,7 @@ async def send_email(message: Message):
             server.login(email_user, email_password)
 
             # Sending the email
-            server.sendmail(email_user, ["advaita@iiit-bh.ac.in", "dump@iiit-bh.ac.in"], msg.as_string())
+            server.sendmail(email_user, ["b221042@iiit-bh.ac.in", "princepious2003@gmail.com", "prakashprince2404@gmail.com"], msg.as_string())
 
         return JSONResponse(content={"message": "Email sent successfully"}, status_code=200)
 
