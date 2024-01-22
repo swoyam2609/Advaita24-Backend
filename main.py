@@ -6,6 +6,11 @@ import uvicorn
 from pydantic import BaseModel
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pymongo import MongoClient
+import mongo
+
+client = MongoClient(mongo.mongoURL)
+db = client["test"]
 
 app = FastAPI()
 
@@ -19,11 +24,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 class Message(BaseModel):
     subject: str
     message: str
     name: str
     email: str
+
 
 class Sponsor(BaseModel):
     company_name: str
@@ -31,6 +38,7 @@ class Sponsor(BaseModel):
     contact_person: str
     designation: str
     email: str
+
 
 @app.post("/send-email/contact-us", tags=["Contact Us"])
 async def send_email(message: Message):
@@ -40,7 +48,8 @@ async def send_email(message: Message):
         email_password = "umlysbykyfpjqypr"
 
         # Creating the MIMEText object
-        msg = MIMEText(message.message + "\n\n" + message.name + "\n" + message.email)
+        msg = MIMEText(message.message + "\n\n" +
+                       message.name + "\n" + message.email)
         msg['Subject'] = "[Contact]"+f" {message.name} | "+message.subject
         msg['From'] = email_user
 
@@ -50,13 +59,16 @@ async def send_email(message: Message):
             server.login(email_user, email_password)
 
             # Sending the email
-            server.sendmail(email_user, ["advaita@iiit-bh.ac.in", "dump@iiit-bh.ac.in"], msg.as_string())
+            server.sendmail(
+                email_user, ["advaita@iiit-bh.ac.in", "dump@iiit-bh.ac.in"], msg.as_string())
 
         return JSONResponse(content={"message": "Email sent successfully"}, status_code=200)
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to send email: {str(e)}")
-    
+        raise HTTPException(
+            status_code=500, detail=f"Failed to send email: {str(e)}")
+
+
 @app.post("/send-email/sponsor-us", tags=["Sponsor Us"])
 async def send_email(message: Sponsor):
     try:
@@ -65,7 +77,8 @@ async def send_email(message: Sponsor):
         email_password = "umlysbykyfpjqypr"
 
         # Creating the MIMEText object
-        msg = MIMEText(message.proposal + "\n\n" + message.contact_person + "\n" + message.designation+ "\n" + message.email + "\n" + message.company_name)
+        msg = MIMEText(message.proposal + "\n\n" + message.contact_person + "\n" +
+                       message.designation + "\n" + message.email + "\n" + message.company_name)
         msg['Subject'] = "[Sponsor]"+f" {message.company_name}"
         msg['From'] = email_user
 
@@ -75,13 +88,16 @@ async def send_email(message: Sponsor):
             server.login(email_user, email_password)
 
             # Sending the email
-            server.sendmail(email_user, ["advaita@iiit-bh.ac.in", "dump@iiit-bh.ac.in", "sponsoradvaita@iiit-bh.ac.in"], msg.as_string())
+            server.sendmail(email_user, [
+                            "advaita@iiit-bh.ac.in", "dump@iiit-bh.ac.in", "sponsoradvaita@iiit-bh.ac.in"], msg.as_string())
 
         return JSONResponse(content={"message": "Email sent successfully"}, status_code=200)
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to send email: {str(e)}")
-    
+        raise HTTPException(
+            status_code=500, detail=f"Failed to send email: {str(e)}")
+
+
 @app.post("/prince/contact-us", tags=["Prince Portfolio Page"])
 async def send_email(message: Message):
     try:
@@ -90,7 +106,8 @@ async def send_email(message: Message):
         email_password = "umlysbykyfpjqypr"
 
         # Creating the MIMEText object
-        msg = MIMEText(message.message + "\n\n" + message.name + "\n" + message.email)
+        msg = MIMEText(message.message + "\n\n" +
+                       message.name + "\n" + message.email)
         msg['Subject'] = "[Contact]"+f" {message.name} | "+message.subject
         msg['From'] = email_user
 
@@ -100,12 +117,30 @@ async def send_email(message: Message):
             server.login(email_user, email_password)
 
             # Sending the email
-            server.sendmail(email_user, ["b221042@iiit-bh.ac.in", "princepious2003@gmail.com", "prakashprince2404@gmail.com"], msg.as_string())
+            server.sendmail(email_user, [
+                            "b221042@iiit-bh.ac.in", "princepious2003@gmail.com", "prakashprince2404@gmail.com"], msg.as_string())
 
         return JSONResponse(content={"message": "Email sent successfully"}, status_code=200)
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to send email: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to send email: {str(e)}")
+
+
+@app.put("/checkin", tags=["Check In"])
+async def checkin(qr: str):
+    try:
+        doc = db.tickets.find_one({"qr": qr})
+        if doc is None:
+            raise HTTPException(status_code=404, detail="Ticket not found")
+        elif (doc["checkIn"] == True):
+            db.tickets.update_one({"qr": qr}, {"$set": {"checkIn": False}})
+            return JSONResponse(content={"message": "Checked Out"}, status_code=200)
+        else:
+            db.tickets.update_one({"qr": qr}, {"$set": {"checkIn": True}})
+            return JSONResponse(content={"message": "Checked In"}, status_code=200)
+    except Exception as e:
+        return JSONResponse(content={"message": "Error"}, status_code=500)
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8001, reload=True)
+    uvicorn.run("main:app", host="127.0.0.1", port=8001, reload=True)
