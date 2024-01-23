@@ -132,7 +132,7 @@ async def checkin(qr: str):
     try:
         doc = db.tickets.find_one({"qr": qr})
         if doc is None:
-            raise HTTPException(status_code=404, detail="Ticket not found")
+            return JSONResponse(content={False}, status_code=201)
         elif (doc["checkIn"] == True):
             db.tickets.update_one({"qr": qr}, {"$set": {"checkIn": False}})
             return JSONResponse(content={"message": "Checked Out"}, status_code=200)
@@ -140,7 +140,7 @@ async def checkin(qr: str):
             db.tickets.update_one({"qr": qr}, {"$set": {"checkIn": True}})
             return JSONResponse(content={"message": "Checked In"}, status_code=200)
     except Exception as e:
-        return JSONResponse(content={"message": "Error"}, status_code=500)
+        return False
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=8001, reload=True)
