@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
-import mongo
+import mongo, creds
 
 client = MongoClient(mongo.mongoURL)
 db = client["test"]
@@ -44,8 +44,8 @@ class Sponsor(BaseModel):
 async def send_email(message: Message):
     try:
         # Your email and password for authentication
-        email_user = "jarvisnayak@gmail.com"
-        email_password = "umlysbykyfpjqypr"
+        email_user = creds.email
+        email_password = creds.password
 
         # Creating the MIMEText object
         msg = MIMEText(message.message + "\n\n" +
@@ -73,8 +73,8 @@ async def send_email(message: Message):
 async def send_email(message: Sponsor):
     try:
         # Your email and password for authentication
-        email_user = "jarvisnayak@gmail.com"
-        email_password = "umlysbykyfpjqypr"
+        email_user = creds.email
+        email_password = creds.password
 
         # Creating the MIMEText object
         msg = MIMEText(message.proposal + "\n\n" + message.contact_person + "\n" +
@@ -102,8 +102,8 @@ async def send_email(message: Sponsor):
 async def send_email(message: Message):
     try:
         # Your email and password for authentication
-        email_user = "jarvisnayak@gmail.com"
-        email_password = "umlysbykyfpjqypr"
+        email_user = creds.email
+        email_password = creds.password
 
         # Creating the MIMEText object
         msg = MIMEText(message.message + "\n\n" +
