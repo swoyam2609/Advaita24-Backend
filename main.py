@@ -132,7 +132,7 @@ async def send_email(message: Message):
 async def checkin(qr: str):
     try:
         doc = db.tickets.find_one({"qr": qr})
-        if (doc["sold"] == True):
+        if (doc["sold"] == True and doc["checkIn"] == False):
             db.tickets.update_one({"qr": qr}, {"$set": {"checkIn": True}})
             return JSONResponse(content={"message": "Checked In"}, status_code=200)
         else:
