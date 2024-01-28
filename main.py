@@ -7,7 +7,8 @@ from pydantic import BaseModel
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
-import mongo, creds
+import mongo
+import creds
 
 client = MongoClient(mongo.mongoURL)
 db = client["test"]
@@ -127,20 +128,31 @@ async def send_email(message: Message):
             status_code=500, detail=f"Failed to send email: {str(e)}")
 
 
-@app.put("/checkin", tags=["Check In"])
+@app.put("/checkin", tags=["Tickets"])
 async def checkin(qr: str):
     try:
         doc = db.tickets.find_one({"qr": qr})
-        if doc is None:
-            return JSONResponse(content={False}, status_code=201)
-        elif (doc["checkIn"] == True):
-            db.tickets.update_one({"qr": qr}, {"$set": {"checkIn": False}})
-            return JSONResponse(content={"message": "Checked Out"}, status_code=200)
-        else:
+        if (doc["sold"] == True):
             db.tickets.update_one({"qr": qr}, {"$set": {"checkIn": True}})
             return JSONResponse(content={"message": "Checked In"}, status_code=200)
+        else:
+            return JSONResponse(content={False}, status_code=201)
     except Exception as e:
         return False
+
+
+@app.put("/sell", tags=["Tickets"])
+async def checkin(qr: str):
+    try:
+        doc = db.tickets.find_one({"qr": qr})
+        if (doc["sold"] == False):
+            db.tickets.update_one({"qr": qr}, {"$set": {"sold": True}})
+            return JSONResponse(content={"message": "SOLD"}, status_code=200)
+        else:
+            return JSONResponse(content={False}, status_code=201)
+    except Exception as e:
+        return False
+
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=8001, reload=True)
