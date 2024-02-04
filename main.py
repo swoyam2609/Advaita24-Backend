@@ -129,37 +129,124 @@ async def send_email(message: Message):
             status_code=500, detail=f"Failed to send email: {str(e)}")
 
 
-@app.put("/checkin", tags=["Tickets"])
+@app.put("/checkin/day0", tags=["Tickets"])
 async def checkin(qr: str):
     try:
         doc = db.tickets.find_one({"qr": qr})
-        if (doc["sold"] == True and doc["checkIn"] == False):
-            db.tickets.update_one({"qr": qr}, {"$set": {"checkIn": True, "checkInAt": datetime.datetime.now()}})
+        if (doc["day0"] == True and doc["day0Checkin"] == False):
+            db.tickets.update_one({"qr": qr}, {
+                                  "$set": {"day0Checkin": True, "day0CheckInAt": datetime.datetime.now()}})
             return JSONResponse(content={"message": "Checked In"}, status_code=200)
         else:
             return JSONResponse(content={False}, status_code=201)
     except Exception as e:
         return False
 
-@app.put("/checkout", tags=["Tickets"])
+
+@app.put("/checkin/day1", tags=["Tickets"])
 async def checkin(qr: str):
     try:
         doc = db.tickets.find_one({"qr": qr})
-        if (doc["sold"] == True and doc["checkIn"] == True):
-            db.tickets.update_one({"qr": qr}, {"$set": {"checkIn": False, "checkOutAt": datetime.datetime.now()}})
-            return JSONResponse(content={"message": "Checked Out"}, status_code=200)
+        if (doc["day1"] == True and doc["day1Checkin"] == False):
+            db.tickets.update_one({"qr": qr}, {
+                                  "$set": {"day1Checkin": True, "day1CheckInAt": datetime.datetime.now()}})
+            return JSONResponse(content={"message": "Checked In"}, status_code=200)
         else:
             return JSONResponse(content={False}, status_code=201)
     except Exception as e:
         return False
 
 
-@app.put("/sell", tags=["Tickets"])
+@app.put("/checkin/day2", tags=["Tickets"])
 async def checkin(qr: str):
     try:
         doc = db.tickets.find_one({"qr": qr})
-        if (doc["sold"] == False):
-            db.tickets.update_one({"qr": qr}, {"$set": {"sold": True, "soldAt": datetime.datetime.now()}})
+        if (doc["day2"] == True and doc["day2Checkin"] == False):
+            db.tickets.update_one({"qr": qr}, {
+                                  "$set": {"day2Checkin": True, "day2CheckInAt": datetime.datetime.now()}})
+            return JSONResponse(content={"message": "Checked In"}, status_code=200)
+        else:
+            return JSONResponse(content={False}, status_code=201)
+    except Exception as e:
+        return False
+
+
+@app.put("/checkin/day3", tags=["Tickets"])
+async def checkin(qr: str):
+    try:
+        doc = db.tickets.find_one({"qr": qr})
+        if (doc["day3"] == True and doc["day3Checkin"] == False):
+            db.tickets.update_one({"qr": qr}, {
+                                  "$set": {"day3Checkin": True, "day3CheckInAt": datetime.datetime.now()}})
+            return JSONResponse(content={"message": "Checked In"}, status_code=200)
+        else:
+            return JSONResponse(content={False}, status_code=201)
+    except Exception as e:
+        return False
+
+
+@app.put("/sell/allDay", tags=["Tickets"])
+async def checkin(qr: str):
+    try:
+        doc = db.tickets.find_one({"qr": qr})
+        if (doc["day0"] == False and doc["day1"] == False and doc["day2"] == False and doc["day3"] == False):
+            db.tickets.update_one(
+                {"qr": qr}, {"$set": {"day0": True, "day1": True, "day2": True, "day3": True, "AllDaySoldAt": datetime.datetime.now()}})
+            return JSONResponse(content={"message": "SOLD"}, status_code=200)
+        else:
+            return JSONResponse(content={False}, status_code=201)
+    except Exception as e:
+        return False
+    
+@app.put("/sell/day0", tags=["Tickets"])
+async def checkin(qr: str):
+    try:
+        doc = db.tickets.find_one({"qr": qr})
+        if (doc["day0"] == False):
+            db.tickets.update_one(
+                {"qr": qr}, {"$set": {"day0": True, "day0SoldAt": datetime.datetime.now()}})
+            return JSONResponse(content={"message": "SOLD"}, status_code=200)
+        else:
+            return JSONResponse(content={False}, status_code=201)
+    except Exception as e:
+        return False
+
+
+@app.put("/sell/day1", tags=["Tickets"])
+async def checkin(qr: str):
+    try:
+        doc = db.tickets.find_one({"qr": qr})
+        if (doc["day1"] == False):
+            db.tickets.update_one(
+                {"qr": qr}, {"$set": {"day1": True, "day1SoldAt": datetime.datetime.now()}})
+            return JSONResponse(content={"message": "SOLD"}, status_code=200)
+        else:
+            return JSONResponse(content={False}, status_code=201)
+    except Exception as e:
+        return False
+
+
+@app.put("/sell/day2", tags=["Tickets"])
+async def checkin(qr: str):
+    try:
+        doc = db.tickets.find_one({"qr": qr})
+        if (doc["day2"] == False):
+            db.tickets.update_one(
+                {"qr": qr}, {"$set": {"day2": True, "day2SoldAt": datetime.datetime.now()}})
+            return JSONResponse(content={"message": "SOLD"}, status_code=200)
+        else:
+            return JSONResponse(content={False}, status_code=201)
+    except Exception as e:
+        return False
+
+
+@app.put("/sell/day3", tags=["Tickets"])
+async def checkin(qr: str):
+    try:
+        doc = db.tickets.find_one({"qr": qr})
+        if (doc["day3"] == False):
+            db.tickets.update_one(
+                {"qr": qr}, {"$set": {"day3": True, "day0SoldAt": datetime.datetime.now()}})
             return JSONResponse(content={"message": "SOLD"}, status_code=200)
         else:
             return JSONResponse(content={False}, status_code=201)
