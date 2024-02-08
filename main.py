@@ -12,7 +12,7 @@ import creds
 import datetime
 
 client = MongoClient(mongo.mongoURL)
-db = client["production"]
+db = client["test"]
 
 app = FastAPI()
 
