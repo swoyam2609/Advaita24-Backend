@@ -189,7 +189,7 @@ async def checkin(qr: str):
 async def checkin(qr: str, name: str, email: str, phone: str, comments: str = ""):
     try:
         doc = db.tickets.find_one({"qr": qr})
-        if (doc["day0"] == False and doc["day1"] == False and doc["day2"] == False and doc["day3"] == False):
+        if (doc["day0"] == False and doc["day1"] == False and doc["day2"] == False and doc["day3"] == False and doc["verify"] == True):
             db.tickets.update_one(
                 {"qr": qr}, {"$set": {"day0": True, "day1": True, "day2": True, "day3": True, "AllDaySoldAt": datetime.datetime.now(), "name": name, "email": email, "phone": phone, "comments": comments}})
             db.logs.insert_one(
@@ -205,7 +205,7 @@ async def checkin(qr: str, name: str, email: str, phone: str, comments: str = ""
 async def checkin(qr: str, name: str, email: str, phone: str, comments: str = ""):
     try:
         doc = db.tickets.find_one({"qr": qr})
-        if (doc["day0"] == False):
+        if (doc["day0"] == False and doc["verify"] == True):
             db.tickets.update_one(
                 {"qr": qr}, {"$set": {"day0": True, "day0SoldAt": datetime.datetime.now(), "name": name, "email": email, "phone": phone, "comments": comments}})
             db.logs.insert_one(
@@ -221,7 +221,7 @@ async def checkin(qr: str, name: str, email: str, phone: str, comments: str = ""
 async def checkin(qr: str, name: str, email: str, phone: str, comments: str = ""):
     try:
         doc = db.tickets.find_one({"qr": qr})
-        if (doc["day1"] == False):
+        if (doc["day1"] == False and doc["verify"] == True):
             db.tickets.update_one(
                 {"qr": qr}, {"$set": {"day1": True, "day1SoldAt": datetime.datetime.now(), "name": name, "email": email, "phone": phone, "comments": comments}})
             db.logs.insert_one(
@@ -237,7 +237,7 @@ async def checkin(qr: str, name: str, email: str, phone: str, comments: str = ""
 async def checkin(qr: str, name: str, email: str, phone: str, comments: str = ""):
     try:
         doc = db.tickets.find_one({"qr": qr})
-        if (doc["day2"] == False):
+        if (doc["day2"] == False and doc["verify"] == True):
             db.tickets.update_one(
                 {"qr": qr}, {"$set": {"day2": True, "day2SoldAt": datetime.datetime.now(), "name": name, "email": email, "phone": phone, "comments": comments}})
             db.logs.insert_one(
@@ -253,7 +253,7 @@ async def checkin(qr: str, name: str, email: str, phone: str, comments: str = ""
 async def checkin(qr: str, name: str, email: str, phone: str, comments: str = ""):
     try:
         doc = db.tickets.find_one({"qr": qr})
-        if (doc["day3"] == False):
+        if (doc["day3"] == False and doc["verify"] == True):
             db.tickets.update_one(
                 {"qr": qr}, {"$set": {"day3": True, "day3SoldAt": datetime.datetime.now(), "name": name, "email": email, "phone": phone, "comments": comments}})
             db.logs.insert_one(
