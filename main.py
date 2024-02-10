@@ -263,6 +263,21 @@ async def checkin(qr: str, name: str, email: str, phone: str, comments: str = ""
             return JSONResponse(content={False}, status_code=201)
     except Exception as e:
         return False
+    
+@app.put("/verify", tags=["Tickets"])
+async def checkin(qr: str):
+    try:
+        doc = db.tickets.find_one({"qr": qr})
+        if (doc["day3"] == False and doc["verify"] == True):
+            db.tickets.update_one(
+                {"qr": qr}, {"$set": {"verify": True, "verifiedAt": datetime.datetime.now()}})
+            db.logs.insert_one(
+                {"action": f'Ticket verified at {datetime.datetime.now()}'})
+            return JSONResponse(content={"message": "SOLD"}, status_code=200)
+        else:
+            return JSONResponse(content={False}, status_code=201)
+    except Exception as e:
+        return False
 
 
 if __name__ == "__main__":
