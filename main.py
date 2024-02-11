@@ -12,7 +12,7 @@ import creds
 import datetime
 
 client = MongoClient(mongo.mongoURL)
-db = client["test"]
+db = client["production"]
 
 app = FastAPI()
 
@@ -193,7 +193,7 @@ async def checkin(qr: str, name: str, email: str, phone: str, comments: str = ""
             db.tickets.update_one(
                 {"qr": qr}, {"$set": {"day0": True, "day1": True, "day2": True, "day3": True, "AllDaySoldAt": datetime.datetime.now(), "name": name, "email": email, "phone": phone, "comments": comments}})
             db.logs.insert_one(
-                {"action": f'All Day ticket sold at {datetime.datetime.now()}'})
+                {"action": f'All Day ticket sold at {datetime.datetime.now()}', 'name': name, 'email': email, 'phone': phone, 'comments': comments, 'qr': qr})
             return JSONResponse(content={"message": "SOLD"}, status_code=200)
         else:
             return JSONResponse(content={False}, status_code=201)
@@ -209,7 +209,7 @@ async def checkin(qr: str, name: str, email: str, phone: str, comments: str = ""
             db.tickets.update_one(
                 {"qr": qr}, {"$set": {"day0": True, "day0SoldAt": datetime.datetime.now(), "name": name, "email": email, "phone": phone, "comments": comments}})
             db.logs.insert_one(
-                {"action": f'Day 0 ticket sold at {datetime.datetime.now()}'})
+                {"action": f'Day 0 ticket sold at {datetime.datetime.now()}', 'name': name, 'email': email, 'phone': phone, 'comments': comments, 'qr': qr})
             return JSONResponse(content={"message": "SOLD"}, status_code=200)
         else:
             return JSONResponse(content={False}, status_code=201)
@@ -225,7 +225,7 @@ async def checkin(qr: str, name: str, email: str, phone: str, comments: str = ""
             db.tickets.update_one(
                 {"qr": qr}, {"$set": {"day1": True, "day1SoldAt": datetime.datetime.now(), "name": name, "email": email, "phone": phone, "comments": comments}})
             db.logs.insert_one(
-                {"action": f'Day 1 ticket sold at {datetime.datetime.now()}'})
+                {"action": f'Day 1 ticket sold at {datetime.datetime.now()}', 'name': name, 'email': email, 'phone': phone, 'comments': comments, 'qr': qr})
             return JSONResponse(content={"message": "SOLD"}, status_code=200)
         else:
             return JSONResponse(content={False}, status_code=201)
@@ -241,7 +241,7 @@ async def checkin(qr: str, name: str, email: str, phone: str, comments: str = ""
             db.tickets.update_one(
                 {"qr": qr}, {"$set": {"day2": True, "day2SoldAt": datetime.datetime.now(), "name": name, "email": email, "phone": phone, "comments": comments}})
             db.logs.insert_one(
-                {"action": f'Day 2 ticket sold at {datetime.datetime.now()}'})
+                {"action": f'Day 2 ticket sold at {datetime.datetime.now()}', 'name': name, 'email': email, 'phone': phone, 'comments': comments, 'qr': qr})
             return JSONResponse(content={"message": "SOLD"}, status_code=200)
         else:
             return JSONResponse(content={False}, status_code=201)
@@ -257,7 +257,7 @@ async def checkin(qr: str, name: str, email: str, phone: str, comments: str = ""
             db.tickets.update_one(
                 {"qr": qr}, {"$set": {"day3": True, "day3SoldAt": datetime.datetime.now(), "name": name, "email": email, "phone": phone, "comments": comments}})
             db.logs.insert_one(
-                {"action": f'Day 3 ticket sold at {datetime.datetime.now()}'})
+                {"action": f'Day 3 ticket sold at {datetime.datetime.now()}', 'name': name, 'email': email, 'phone': phone, 'comments': comments, 'qr': qr})
             return JSONResponse(content={"message": "SOLD"}, status_code=200)
         else:
             return JSONResponse(content={False}, status_code=201)
