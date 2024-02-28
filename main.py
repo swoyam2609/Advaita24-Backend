@@ -129,6 +129,17 @@ async def send_email(message: Message):
             status_code=500, detail=f"Failed to send email: {str(e)}")
 
 
+@app.put("/checkout", tags=["Tickets"])
+async def checkin(qr: str):
+    try:
+        doc = db.tickets.find_one({"qr": qr})
+        db.tickets.update_one({"qr": qr}, {
+            "$set": {"day0Checkin": False, "day1Checkin": False, "day2Checkin": False, "day3Checkin": False}})
+        return JSONResponse(content={"message": "Checked Out"}, status_code=200)
+    except Exception as e:
+        return False
+
+
 @app.put("/checkin/day0", tags=["Tickets"])
 async def checkin(qr: str):
     try:
