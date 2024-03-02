@@ -201,8 +201,9 @@ async def checkin(qr: str, name: str, email: str, phone: str, comments: str = ""
     try:
         if (True):
             db.tickets.insert_one(
-    {"qr": qr, "day0": True, "day1": True, "day2": True, "day3": True, "AllDaySoldAt": datetime.datetime.now(), "name": name, "email": email, "phone": phone, "comments": comments}
-)
+                {"qr": qr, "day0": True, "day1": True, "day2": True, "day3": True, "AllDaySoldAt": datetime.datetime.now(
+                ), "name": name, "email": email, "phone": phone, "comments": comments}
+            )
             db.logs.insert_one(
                 {"action": f'All Day ticket sold at {datetime.datetime.now()}', 'name': name, 'email': email, 'phone': phone, 'comments': comments, 'qr': qr})
             return JSONResponse(content={"message": "SOLD"}, status_code=200)
@@ -217,7 +218,8 @@ async def checkin(qr: str, name: str, email: str, phone: str, comments: str = ""
     try:
         doc = db.tickets.find_one({"qr": qr})
         if (doc["day0"] == False and doc["verify"] == True):
-            db.tickets.insert_one({"qr": qr, "day0": True, "day0SoldAt": datetime.datetime.now(), "name": name, "email": email, "phone": phone, "comments": comments})
+            db.tickets.insert_one({"qr": qr, "day0": True, "day0SoldAt": datetime.datetime.now(
+            ), "name": name, "email": email, "phone": phone, "comments": comments})
             db.logs.insert_one(
                 {"action": f'Day 0 ticket sold at {datetime.datetime.now()}', 'name': name, 'email': email, 'phone': phone, 'comments': comments, 'qr': qr})
             return JSONResponse(content={"message": "SOLD"}, status_code=200)
@@ -262,11 +264,12 @@ async def checkin(qr: str, name: str, email: str, phone: str, comments: str = ""
 @app.put("/sell/day3", tags=["Tickets"])
 async def checkin(qr: str, name: str, email: str, phone: str, comments: str = ""):
     try:
-        doc = db.tickets.find_one({"qr": qr})
-        if (doc["day3"] == False and doc["verify"] == True):
+
+        if (True):
             db.tickets.insert_one(
-    {"qr": qr, "day0": True, "day1": True, "day2": True, "day3": True, "AllDaySoldAt": datetime.datetime.now(), "name": name, "email": email, "phone": phone, "comments": comments}
-)
+                {"qr": qr, "day0": True, "day1": True, "day2": True, "day3": True, "AllDaySoldAt": datetime.datetime.now(
+                ), "name": name, "email": email, "phone": phone, "comments": comments}
+            )
             db.logs.insert_one(
                 {"action": f'Day 3 ticket sold at {datetime.datetime.now()}', 'name': name, 'email': email, 'phone': phone, 'comments': comments, 'qr': qr})
             return JSONResponse(content={"message": "SOLD"}, status_code=200)
